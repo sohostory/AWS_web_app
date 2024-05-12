@@ -8,7 +8,12 @@ import boto3
 # import two packages to help us with dates and date formatting
 from time import gmtime, strftime
 
-# TODO: DynamoDB section
+# create a DynamoDB object using the AWS SDK
+dynamodb = boto3.resource('dynamodb')
+# use the DynamoDB object to select our table
+table = dynamodb.Table('TwoPointOhDatabase')
+# store the current time in a human readable format in a variable
+now = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
 
 # define the handler function that the Lambda service will use an entry point
 def lambda_handler(event, context):
@@ -32,7 +37,12 @@ def lambda_handler(event, context):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     distance = 6371 * c  # Earth's radius in km
 
-# TODO: write result and time to the DynamoDB table using the object we instantiated and save response in a variable
+# write result and time to the DynamoDB table using the object we instantiated and save response in a variable
+    response = table.put_item(
+        Item={
+            'ID': str(distance),
+            'LatestGreetingTime':now
+            })
 
 # return a properly formatted JSON object
     return {
